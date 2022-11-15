@@ -3,6 +3,7 @@ import './preview.css';
 
 interface PreviewProps {
   code: string;
+  err: string;
 }
 
 const html = `
@@ -11,12 +12,23 @@ const html = `
     <body>
       <div id='root'></div>
       <script>
+        const handleError = (err) => {
+          const root = document.querySelector('#root');
+          root.innerHTML = '<div>' + err  + '</div>';
+          console.log(err);
+        }
+
+        window.addEventListener('error', (event) => {
+          event.preventDefault();
+          handleError(event.error);
+          
+        })
+
         window.addEventListener('message', (event) => {
           try {
             eval(event.data);  
           } catch (err) {
-            const root = document.querySelector('#root');
-            root.innerHTML = '<div>' + err  + '</div>';
+            handleError(err);
           }
         }, false)
       </script>
@@ -24,7 +36,7 @@ const html = `
   </html>
   `;
 
-const Preview: React.FC<PreviewProps> = ({ code }) => {
+const Preview: React.FC<PreviewProps> = ({ code, err }) => {
   const iframe = useRef<any>();
 
   useEffect(() => {
@@ -42,6 +54,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
         sandbox='allow-scripts'
         srcDoc={html}
       />
+      {err && <div className='preview-error'>{err}</div>}
     </div>
   );
 };
