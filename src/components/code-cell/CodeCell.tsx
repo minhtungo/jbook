@@ -21,15 +21,18 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     //Add a show function to conveniently render on the Preview
     const cumulativeCode = [
       `
+        import _React from 'react';
+        import _ReactDOM from 'react-dom';
         const show = (value) => {
+          const root = document.querySelector('#root')
           if(typeof value === 'object') {
             if(value.$$typeof && value.props) {
-              ReactDOM.render(value, document.querySelector('#root))
+              _ReactDOM.render(value, root)
             } else {
-              document.querySelector('#root).innerHTML = JSON.stringify(value);
+              root.innerHTML = JSON.stringify(value);
             }
           } else {
-            document.querySelector('#root).innerHTML = value;
+            root.innerHTML = value;
           }
         }
       `,
